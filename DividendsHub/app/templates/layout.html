@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- https://favicon.io/emoji-favicons/money-mouth-face/
+        <link href="/static/favicon.ico" rel="icon"> -->
+        <link href="/static/chart.png" rel="icon"> 
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+        {% if title %}
+            <title>Dividend$Hub - {{ title }}</title>
+        {% else %}
+            <title>Dividend$Hub</title>
+        {% endif %}
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-md navbar-light bg-light border">
+            <a class="navbar-brand" href="/"><span class="red">Dividend$Hub</span></a>
+            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if current_user.is_authenticated %}
+                    <ul class="navbar-nav mr-auto mt-2">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle mr-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Portfolio
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="{{ url_for('main.index') }}">Home</a>
+                              <a class="dropdown-item" href="{{ url_for('main.diversification') }}">Your diversification</a>
+                              <a class="dropdown-item" href="{{ url_for('main.buy') }}">Add stocks</a>
+                              <a class="dropdown-item" href="{{ url_for('main.edit') }}">Edit stocks</a>
+                              <a class="dropdown-item" href="{{ url_for('main.deposit') }}">Log a deposit</a>
+                              <a class="dropdown-item" href="{{ url_for('main.deposits') }}">Review deposits</a>
+                              <a class="dropdown-item" href="{{ url_for('main.dash') }}">Dashboard</a>
+                            </div>
+                          </div>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle mr-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dividends
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{{ url_for('main.dividends') }}">Dividend info</a>
+                                <a class="dropdown-item" href="{{ url_for('main.log_dividends') }}">Log dividends</a>
+			    </div>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle mr-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Other Tools
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{{ url_for('main.compare') }}">Compare stocks</a>
+                            </div>
+                        </div>
+                    </ul>
+                    <ul class="navbar-nav ml-auto mt-2">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle mr-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Others
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{{ url_for('main.about') }}">About</a>
+                                <a class="dropdown-item" href="{{ url_for('main.dash') }}">Coming Soon</a>
+                            </div>
+                          </div>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.account') }}">Account</a></li>  
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.logout') }}">Log Out</a></li>
+                    </ul>
+                {% else %}
+                    <ul class="navbar-nav ml-auto mt-2">
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                              Free Tools
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <a class="dropdown-item" href="{{ url_for('main.compare') }}">Compare stocks</a>
+                              <a class="dropdown-item" href="{{ url_for('main.reset_request') }}">Forgot password</a>
+                              <a class="dropdown-item" href="{{ url_for('main.about') }}">About</a>
+                            </div>
+                          </div>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.register') }}">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.login') }}">Log In</a></li>
+                    </ul>
+                {% endif %}
+            </div>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <main class="container p-5">
+            {% block content %}{% endblock %}
+        </main>
+     
+        <div class="text-center">
+            <footer class="small text-center text-muted">
+                Data provided for free by <a href="https://iextrading.com/developer">IEX</a>. View <a href="https://iextrading.com/api-exhibit-a/">IEX’s Terms of Use</a>.
+            </footer>
+        </div>
+    </body>
+
+</html>

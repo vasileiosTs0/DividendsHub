@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log a Deposit</legend>
+                <div class="form-group center">
+                    <form action="/deposit" method="post">
+                        <input autocomplete="off" autofocus class="form-control" name="date" placeholder="Date" type="date">
+                </div>
+                <div class="form-group">
+                    <label for="staticEmail" class="col-sm-2 col-form-label text-right centre">{{ form.amount.label(class="form-control-label") }}</label>
+                    {% if form.amount.errors %}
+                        {{ form.amount(class="form-control form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.amount.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.amount(class="form-control form-control centre") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
