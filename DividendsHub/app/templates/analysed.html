@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <table class="table">
+        {% for key, value in stock.items() %}
+        <tr>
+			<th scope="row"> {{ key }} </th>
+			<td> {{ value }} </td>
+		</tr>
+        {% endfor %}
+    </table>
+    <br><br><br>
+    <div class = "text-justify">
+        <br>
+        <h4>Disclaimer:</h4>
+        <br><br>
+        <h5>Do your Own Research</h5>
+
+        <p>This content is intended to be used and must be used for informational purposes only. It is very important to do your own analysis before making any investment based on your own personal circumstances. You should take independent financial advice from a professional in connection with, or independently research and verify, any information that you find on this website and wish to rely upon, whether for the purpose of making an investment decision or otherwise.</p>
+
+        <h5>No Investment Advice</h5>
+
+        <p>This website is a financial data portal and content aggregator. This website is not an investment advisor. This is an open source website for analysing, learning &amp; and producing generic information related to stocks and investments and strategies. No content on the site constitutes - or should be understood as constituting - a recommendation to enter in any securities transactions or to engage in any of the investment strategies presented. We do not provide personalised recommendations or views as to whether a stock or investment approach is suited to the financial needs of a specific individual.</p>
+    </div>
+{% endblock %}

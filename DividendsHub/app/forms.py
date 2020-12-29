@@ -35,7 +35,7 @@ class LoginForm(FlaskForm):
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username:',
-                           validators=[DataRequired(), Length(min=2, max=20)])
+                           validators=[DataRequired(), Length(min=1, max=20)])
     email = StringField('Email:',
                         validators=[DataRequired(), Email()])
     submit = SubmitField('Update')
@@ -56,7 +56,7 @@ class UpdateAccountForm(FlaskForm):
 
 class InsertStock(FlaskForm):
     ticker = StringField('Ticker:',
-                           validators=[DataRequired(), Length(min=2, max=5)])
+                           validators=[DataRequired(), Length(min=1, max=5)])
     number_of_shares = DecimalField('Number of shares:',
                         validators=[DataRequired()])
     cost_basis = DecimalField('Cost basis:',
@@ -102,3 +102,13 @@ class LogDividend(FlaskForm):
     ticker = StringField('Ticker:',
                            validators=[DataRequired(), Length(min=2, max=5)])
     submit = SubmitField('Log Dividend')
+
+
+class AnalyseStock(FlaskForm):
+    ticker = StringField('Ticker:',
+                           validators=[DataRequired(), Length(min=1, max=5)])
+    First_SMA = DecimalField('First Simple Moving Average:', default=50, validators=[NumberRange(min=0)])
+    Second_SMA = DecimalField('Second Simple Moving Average:', default=150, validators=[NumberRange(min=0)])
+    Third_SMA = DecimalField('Third Simple Moving Average:', default=200, validators=[NumberRange(min=0)])
+    RSI_period = DecimalField('RSI period:', default=14, validators=[NumberRange(min=0)])
+    submit = SubmitField('Analyse stock')

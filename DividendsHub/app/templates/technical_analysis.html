@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="" value="Log">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Stock Analysis</legend>
+            <div class="form-group">
+                <label for="staticEmail" class="col-sm-2 col-form-label text-right">{{ form.ticker.label(class="form-control-label") }}</label>
+
+                {% if form.ticker.errors %}
+                    {{ form.ticker(class="form-control form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.ticker.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.ticker(class="form-control form-control") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="staticEmail" class="col-sm-2 col-form-label text-right">{{ form.First_SMA.label(class="form-control-label") }}</label>
+                {% if form.First_SMA.errors %}
+                    {{ form.First_SMA(class="form-control form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.First_SMA.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.First_SMA(class="form-control form-control") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="staticEmail" class="col-sm-2 col-form-label text-right">{{ form.Second_SMA.label(class="form-control-label") }}</label>
+                {% if form.Second_SMA.errors %}
+                    {{ form.Second_SMA(class="form-control form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.Second_SMA.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.Second_SMA(class="form-control form-control") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="staticEmail" class="col-sm-2 col-form-label text-right">{{ form.Third_SMA.label(class="form-control-label") }}</label>
+                {% if form.Third_SMA.errors %}
+                    {{ form.Third_SMA(class="form-control form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.Third_SMA.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.Third_SMA(class="form-control form-control") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="staticEmail" class="col-sm-2 col-form-label text-right">{{ form.RSI_period.label(class="form-control-label") }}</label>
+                {% if form.RSI_period.errors %}
+                    {{ form.RSI_period(class="form-control form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.RSI_period.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.RSI_period(class="form-control form-control") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+
+<br><br><br>
+    <div class = "text-justify">
+        <h5>Guide:</h5>
+        <ul> <span style="color:red;"></span>
+            <li>Condition 1: <span style="color:purple;">Current Price</span> is bigger than the <span style="color:red;">First SMA</span></li>
+            <li>Condition 2: <span style="color:purple;">Current Price</span> is at least 30% above  <span style="color:purple;">52 week low</span></li>
+            <li>Condition 3: <span style="color:purple;">Current Price</span> is within 25% of <span style="color:purple;">52 week high</span></li>
+            <li>Condition 4: <span style="color:red;">First SMA</span> is greater than <span style="color:red;">Second SMA</span> and <span style="color:red;">Third SMA</span></li>
+            <li>Condition 5: <span style="color:purple;">Current Price</span> is bigger than the <span style="color:red;">Second SMA</span> and bigger <span style="color:red;">Third SMA</span></li>
+            <li>Condition 6: <span style="color:red;">Second SMA</span> is greater than <span style="color:red;">Third SMA</span></li>
+            <li>Condition 7: <span style="color:red;">Third SMA</span> is trending up for the last last months</li>
+            <li>Condition 8: <span style="color:blue;">RSI rating</span> is greater than 70</li>
+        </ul>
+     </div>
+{% endblock content%}

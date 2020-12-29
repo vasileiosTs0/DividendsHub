@@ -4,5 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
 db = SQLAlchemy()
+#migrate = Migrate()
 login = LoginManager()
 mail = Mail()

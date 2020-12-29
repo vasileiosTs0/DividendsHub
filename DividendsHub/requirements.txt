@@ -30,3 +30,4 @@ requests==2.22.0
 mpmath==1.1.0
 matplotlib==3.1.1
 xlrd==1.2.0
+yfinance==0.1.55

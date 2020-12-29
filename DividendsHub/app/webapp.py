@@ -1,13 +1,16 @@
+#from datetime import datetime
 from flask import Blueprint, render_template, flash, redirect, request, url_for, abort, Flask, current_app
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.urls import url_parse
 from sqlalchemy import and_
+#from app import create_db as db
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.helpers import (apology, login_required, lookup, usd, dividend, 
                             company_info,  company_stats, company_info2, 
                             find_sector, create_deposits_plot, create_sunburst_plots,
-                            create_dividend_plot, create_portfolio_indicator_plots)
+                            create_dividend_plot, create_portfolio_indicator_plots,
+                            SMA_signal)
 from pandas_finance import Equity
 import pandas as pd
 import csv
@@ -18,7 +21,7 @@ from app.extensions import db, mail
 from app.forms import (LoginForm, RegistrationForm,  UpdateAccountForm, 
                         InsertStock, UploadPortfolio, EditStock, 
                         AddDeposit, RequestResetForm, ResetPasswordForm,
-                        LogDividend)
+                        LogDividend, AnalyseStock)
 import dash
 import dash_html_components as html
 from werkzeug.wsgi import DispatcherMiddleware
@@ -50,8 +53,8 @@ def index():
                 stocks.append(list((str(row.symbol), str(row.name), round(float(row.amount_of_shares),2), round(cost_basis,2), round(price,2), float(stock_info['PE Ratio']))))
                 total_cost_basis += stocks[index][3]
                 total_market_value += stocks[index][4]
-                dividend_info = company_stats(row.symbol) 
-                total_income += round(dividend_info['ttmDividend']*row.amount_of_shares,2)
+                dividend_info = company_stats(row.symbol) #New
+                total_income += round(dividend_info['ttmDividend']*row.amount_of_shares,2) #New
             portofolio_yield = round(total_income/total_market_value * 100,2)
 
             plot = create_portfolio_indicator_plots(users_stocks, portofolio_yield)    
@@ -341,16 +344,23 @@ def deposits():
             return redirect(url_for('main.deposit')) 
 
         years = Deposits.query.filter_by(owner=current_user).distinct(Deposits.year).order_by(Deposits.year.asc())
+        #for year in years:
+        #    print(year)
         yr = []
         deposits_table = []
         total = 0
         if years:
             for year in years:
+                #print(year, year.year)
                 yr.append(list((year.id, year.date, year.year, year.amount)))
                 total += year.amount
                 deposits_table.append(list((year.id, year.date.strftime("%Y-%m-%d"), year.amount)))
             df = pd.DataFrame(yr)
-            df.columns = ['id', 'date', 'year', 'amount']           
+            df.columns = ['id', 'date', 'year', 'amount']    
+
+            #print("End of years")    
+            #print(df.head())
+       
 
             if df['year'].nunique() >= 5:
                 deposit_years = df['year'].unique()[-5:]
@@ -390,6 +400,9 @@ def deposits():
                 Deposits_list["deposits_" + str(i)] = Deposits_list["deposits_" + str(i)].drop(['Year'], axis=1)
             bar = create_deposits_plot(Deposits_list, deposit_years)
             return render_template("deposits.html", deposits=deposits_table, total=total, plot=bar)
+        
+    #return render_template("deposits.html", deposits=deposits_table, plot=bar)
+
 
 
 @server_bp.route("/compare", methods=["GET", "POST"])
@@ -417,7 +430,6 @@ def compare():
                 #print(f"{i} -> {index},{element}: {tickers[i][element]}")
                 compare_data[i][index] = tickers[i][element]
                 elements[index] = element
-    
         return render_template("compared.html", stocks=compare_data, elements=elements)
     else:
         # Redirect user to login form
@@ -445,7 +457,7 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.', 'info')
+        flash('An email from yourdividendtracker@gmail.com has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('main.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
 
@@ -523,11 +535,127 @@ def log_dividends():
 
     return render_template("log_dividends.html", title='Log Dividends', form=form)
 
+
+
+@server_bp.route("/technical_analysis", methods=["GET", "POST"])
+@login_required
+def technical_analysis():
+    """Analyse a stock"""
+#    print(current_user)
+    if current_user:
+        form = AnalyseStock()
+        if form.validate_on_submit():
+            # Analyse stock ticker
+            ticker = form.ticker.data
+            first_sma = int(form.First_SMA.data)
+            second_sma = int(form.Second_SMA.data)
+            third_sma = int(form.Third_SMA.data)
+            rsi_period = int(form.RSI_period.data)
+            print(ticker)
+            # Check ticker is provided and it exists
+            if not ticker:
+                return apology("need to add the ticker")
+            if lookup(ticker) == None:
+                return apology("no such stock ticker")
+
+            signal = SMA_signal(ticker, first_sma, second_sma, third_sma, rsi_period)
+            
+            return render_template("analysed.html", stock=signal)
+
+    else:
+        abort(403)
+    return render_template('technical_analysis.html', title='Technical Analysis', form=form)
+
+
+
+
+
+#server=Flask(__name__)
+def protect_dashviews(dashapp):
+    for view_func in dashapp.server.view_functions:
+        if view_func.startswith(dashapp.config.requests_pathname_prefix):
+            dashapp.server.view_functions[view_func] = login_required(dashapp.server.view_functions[view_func])
+    
+    return dashapp
+
+"""
+
+#def register_dashapps(app):
+print("Inside!!!")
+from app.dashapp1.layout import layout
+from app.dashapp1.callbacks import register_callbacks
+
+# Meta tags for viewport responsiveness
+meta_viewport = {"name": "viewport", "content": "width=device-width, initial-scale=1, shrink-to-fit=no"}
+external_stylesheets=["./assets/responsive-sidebar.css"]
+dashapp1 = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True, url_base_pathname='/dashboard/')
+#dashapp1 = dash.Dash(__name__,
+#                        server=app,
+#                        url_base_pathname='/dashboard/',
+#                        #assets_folder=get_root_path(__name__) + '/assets/',
+#                        assets_external_path='./dashboard/assets',
+#                        external_stylesheets=external_stylesheets)#,
+                    #    meta_tags=[meta_viewport])
+
+
+#with server_bp.app_context():
+#    dashapp1.title = 'Dashboard'
+#    dashapp1.layout = layout
+#    register_callbacks(dashapp1)
+dashapp1.title = 'Dashboard'
+dashapp1.layout = layout
+#register_callbacks(dashapp1)
+
+#app = DispatcherMiddleware(Flask(__name__), {
+#                            '/dashboard1': dashapp1.server
+#    })
+#print(app)
+_protect_dashviews(dashapp1)
+
+
+    #return dashapp1
+    #print(dashapp1.config.meta_tags)
+    #print(dashapp1.config.external_stylesheets)
+
+"""
+
+#server_dash = Flask(__name__)
+
+#dash_app1 = dash.Dash(__name__,server=Flask(__name__), requests_pathname_prefix='/dashboard/',routes_pathname_prefix = "/", )
+#dash_app2 = dash.Dash(__name__,server=Flask(__name__), requests_pathname_prefix='/reports/',routes_pathname_prefix = "/")
+#dash_app1.layout = html.Div([html.H1('Hi there, I am app1 for dashboards')])
+#dash_app2.layout = html.Div([html.H1('Hi there, I am app2 for reports')])
+#dash_app1 = protect_dashviews(dash_app1)
+#dash_app2 = protect_dashviews(dash_app2)
+
 @server_bp.route("/dash")
 @login_required
 def dash():
+    print("Done!")
     #return redirect('/dashboard')
     return render_template("coming_soon.html")
+    #return redirect(url_for('main.account'))
+    
+
+#app = DispatcherMiddleware(server_bp, {
+#                            '/dash': dashapp1.server
+#    })
+
+
+#@server_bp.route("/dash")
+#def render_dashboard():
+#    return redirect('/dashboard')
+
+
+#@server_bp.route('/report')
+#def render_reports():
+#    return redirect('/reports')
+
+
+#server_bp.wsgi_app = DispatcherMiddleware(Flask(__name__), {
+#    '/dashboard': dash_app1.server,
+#    '/reports': dash_app2.server
+#})
 
 @server_bp.app_errorhandler(404)
 def error_404(error):

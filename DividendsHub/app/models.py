@@ -15,6 +15,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
+    #First_name = db.Column(db.String(40), unique=True, nullable=False)    
+    #Last_name = db.Column(db.String(120), unique=True, nullable=False)
     stocks = db.relationship('Stocks', backref='owner', lazy=True)
     deposits = db.relationship('Deposits', backref='owner', lazy=True)
     dividends = db.relationship('Dividends', backref='owner', lazy=True)
@@ -71,3 +73,33 @@ class Dividends(db.Model):
 
     def __repr__(self):
         return f"Dividends('{self.symbol}', '{self.amount}', '{self.date}', '{self.year}')"
+
+#class Dividend_info(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    symbol = db.Column(db.Integer, db.ForeignKey('Stocks.symbol'), nullable=False, unique=True)
+#    exDay = db.Column(db.Date, nullable=False, default=datetime.utcnow)
+#    payDay = db.Column(db.Date, nullable=False)  
+#    amount = db.Column(db.Float, nullable=False)    
+#
+#    div_info = db.relationship('Dividend_paid', backref='div_paid', lazy=True)
+#
+#    def __repr__(self):
+#        return f"Dividend_info('{self.symbol}', '{self.exDay}', '{self.payDay}', '{self.amount}')"
+
+#class Dividend_paid(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#    symbol = db.Column(db.String, db.ForeignKey('Dividend_info.symbol'), nullable=False)
+#    payDay = db.Column(db.Date, nullable=False)  
+#    amount = db.Column(db.Float, nullable=False)    
+#
+#    def __repr__(self):
+#        return f"DivideDividend_paidnd_info('{self.user_id}', '{self.symbol}', '{self.payDay}', '{self.amount}')"
+
+#class Portfolio(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#    portfolio_name = db.Column(db.String(60), nullable=False)
+
+#    def __repr__(self):
+#        return f"Portfolio('{self.user_id}', '{self.portfolio_name}')"
