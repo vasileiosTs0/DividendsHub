@@ -828,9 +828,9 @@ def SMA_signal(stock, first_sma, second_sma, third_sma, rsi_window):
             cond_8 = False
             
         if(cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6 and cond_7 and cond_8):
-            message = stock+ " is a BUY"
+            message = "Might be a buying opportunity for " +stock
         else:
-            message = stock+ " is NOT a buy"
+            message = stock+ " does not present a buy opportunity at the moment"
 
         stock_data = df['Adj Close']
         resistance = find_resistance(stock_data)[-1:]
