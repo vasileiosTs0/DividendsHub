@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField, DecimalField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from flask_wtf.file import FileField, FileAllowed
-from app.models import User
+from dividendshub.models import User
 from flask_login import current_user
 
 

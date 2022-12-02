@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+
+{% else  %}
+
+{% if plot %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <!--<div class ="center">-->
+                <!--<div class="row align-items-center">-->
+                    <!--<div class="col-md-auto">-->
+                        <div class="chart" id="sunburst">
+                            <script>
+                                var graphs = {{plot | safe}};
+                                Plotly.plot('sunburst',graphs,{});
+                            </script>
+                        </div>
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p><small>(Where parent is the respective sector and root your portfolio.)</small></p>
+<br>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
+<p>Your current portfolio generates ${{ total }} per annum.</p>
+<br>
+<table id="divtable" class="table">
+    <thread>
+        <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">Name</th>
+            <th scope="col">Ex-div date</th>
+            <!--<th scope="col">Payment date</th>-->
+            <th scope="col">Amount per share</th>
+            <th scope="col">Total</th>
+        </tr>
+    </thread>
+    <tbody id="tableData">
+    {% for dividend in dividends %}
+    <tr>
+        <th scope="row">{{ dividend[0] }}</th>
+        <td>{{ dividend[1] }}</td>
+        <td>{{ dividend[2] }}</td>
+        <!--<td>{{ dividend[3] }}</td>-->
+        <td>{{ dividend[4] }}</td>
+        <td>{{ dividend[5] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <th scope="row">Total</th>
+        <td></td>
+        <td></td>
+        <!--<td></td>-->
+        <td></td>           
+        <td>{{ total }}</td>
+    </tr>
+    </tfoot>
+</table>
+
+  
+{% else  %}
+    <p> You do not have any dividend stocks on your portfolio yet.</p>
+    <p> You can add your stocks <a href="{{ url_for('main.buy') }}">here</a>.</p>  
+{% endif %}
+
+
+
+{% endif %}
+
+<script>
+    $.extend( $.fn.dataTable.defaults, {
+        responsive: true
+    } );
+     
+    $(document).ready(function() {
+        $('#divtable').DataTable();
+    } );
+</script>
+{% endblock %}
