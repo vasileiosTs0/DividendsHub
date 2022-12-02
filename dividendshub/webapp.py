@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 from flask import Blueprint, render_template, flash, redirect, request, url_for, abort
-from flask_login import current_user, login_required, login_user, logout_user
+from flask_security import current_user, login_required, login_user, logout_user
 from flask_mail import Message
 from pandas_finance import Equity
 # from app import create_db as db
