@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <br><br>
+    <script type='text/javascript'>
+        function addFields(){
+            // Number of inputs to create
+            var number = document.getElementById("member").value;
+            // Container <div> where dynamic content will be placed
+            var container = document.getElementById("container");
+            // Clear previous contents of the container
+            while (container.hasChildNodes()) {
+                container.removeChild(container.lastChild);
+            }
+            for (i=0;i<number;i++){
+                // Append a node with a random text
+                container.appendChild(document.createTextNode("Ticker " + (i+1) + ": "));
+                // Create an <input> element, set its type and name attributes
+                var input = document.createElement("input");
+                input.type = "text";
+                input.name = "ticker" + i;
+                container.appendChild(input);
+                // Append a line break 
+                container.appendChild(document.createElement("br"));
+                container.appendChild(document.createElement("br"));
+            }
+        }
+    </script>
+</head>
+<body>
+    <form action="/compare" method="post">
+    Number of companies to compare: <input type="number" id="member" name="Ticker_number" value="2"> <br />
+    <a href="#" id="filldetails" onclick="addFields()">Show fields</a>
+    <div id="container"/><br>
+    </div>
+    <br>
+    <button class="btn btn-primary" type="submit">Compare</button>
+</form>
+</body>
+{% endblock %}

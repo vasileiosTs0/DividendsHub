@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <legend class="border-bottom mb-4">About this website</legend>
+{% if current_user.is_anonymous %}
+<div class="d-flex justify-content-start">
+    <h4>Dear visitor,</h4>
+</div>
+{% else  %}
+<div class="d-flex justify-content-start">
+    <h4>Dear {{ current_user.username }},</h4>
+</div>
+{% endif %}
+
+<div class = "text-justify">
+    <br>
+    <p>I hope you are doing well and that you are enjoying this website.</p>
+        <br>
+
+        <p>This website was created by me, <a href="https://www.linkedin.com/in/vasileiosts/">Vasileios Tsormpatzoudis</a>, in my endeavour to learn python and apply my skills.</p>  
+        <br>
+        
+        <p>This project is the extension of the <a href="https://cs50.harvard.edu/x">CS50</a> coursework. 
+        Therefore, I would like to thank <a href="https://cs.harvard.edu/malan/">David J. Malan</a> and <a href="https://brianyu.me/">Brian Yu</a> from the CS50 team for their guidance.</p>
+        <br>
+        
+        <p>Furthermore, I would like to thank <a href="https://coreyms.com/">Corey Schafer</a> for sharing his knowledge on his youtube
+        <a href="https://www.youtube.com/channel/UCCezIgC97PvUuR4_gbFUs5g"> channel</a>.</p>
+        <br>
+
+        <p>This website provides a tool to monitor the performance of your stock portfolio. It visualises the diversity of your portfolio allocation and dividend income. 
+            The tool currently accepts only US stocks and ETFs, however I am working on extending its features.</p> 
+        <br>
+
+        <p>Please, be patient with this website as I am currently working on my PhD thesis. </p>
+        <p>Thank you for your understanding.</p>
+        <br>
+
+        <p>Yours sincerely,</p>
+        <p>Vasileios</p>
+
+    
+</div>
+{% endblock %}

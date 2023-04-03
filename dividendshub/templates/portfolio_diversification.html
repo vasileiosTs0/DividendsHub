@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h3>Hi {{ current_user.username }},</h3>
+
+{% if plot %}
+
+    <p> Here is your portfolio diversification: </p>
+  <br>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <!--<div class ="center">-->
+                <!--<div class="row align-items-center">-->
+                    <!--<div class="col-md-auto">-->
+                        <div class="chart" id="sunburst">
+                            <script>
+                                var graphs = {{plot | safe}};
+                                Plotly.plot('sunburst',graphs,{});
+                            </script>
+                        </div>
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            </td>
+        </tr>   
+    </tbody>
+</table>
+{% else  %}
+    <p> You have no stocks on your portfolio yet.</p>
+    <p> You can add your stocks <a href="{{ url_for('main.buy') }}">here</a>.</p>
+{% endif %}
+
+{% endblock %}

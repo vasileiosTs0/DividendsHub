@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<div class="center-plot">
+    <div>
+        <div class="chart justify-content-center" id="bargraph">
+            <script>
+                var graphs = {{plot | safe}};
+                Plotly.plot('bargraph',graphs,{});
+            </script>
+        </div>
+    </div>
+</div>
+
+<form action="/deposits" method="post">
+    <table class="table" id="depositstable">
+        <thread class="thread-light">
+            <tr>
+                <th scope="col">
+                    
+                        <div>
+                            <button class="btn btn-danger btn-sm" type="submit" name="delete_button", value="Delete">Delete</button>
+                        </div>
+                    
+                </th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+            </tr>
+        </thread>
+        <tbody>
+        {% if deposits %}    
+        {% for deposit in deposits %}
+        <tr>
+            <th scope="row"><input type="checkbox" name="selection" value= {{ deposit[0] }} ></input></th>
+            <td>{{ deposit[1] }}</td>
+            <td>{{ deposit[2] }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}  
+        </tbody>
+        <tfoot>
+            <tr> 
+                <th scope="row">Total</th>
+                <td></td>
+                <td>{{ total }}</td>
+              </tr>
+            </tfoot>
+    </table>
+</form>
+{% endblock %}
